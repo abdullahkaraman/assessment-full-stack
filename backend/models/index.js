@@ -1,7 +1,7 @@
-const mongoose = require("mongoose");
-const Influencer = require("./Influencer");
-const Post = require("./Post");
-const { MONGODB_URI } = require("../config");
+import mongoose from "mongoose";
+import Influencer from "./Influencer.js";
+import Post from "./Post.js";
+import { MONGODB_URI } from "../config/index.js";
 
 mongoose.connect(MONGODB_URI, {
   useNewUrlParser: true,
@@ -17,7 +17,9 @@ mongoose.connection.once("open", () => {
   console.log("MongoDB connected successfully");
 });
 
-module.exports = {
+const models = {
   Influencer,
   Post,
 };
+
+export default models;

@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const influencerSchema = new mongoose.Schema({
   fullName: {
@@ -14,4 +14,4 @@ const influencerSchema = new mongoose.Schema({
 
 const Influencer = mongoose.model("Influencer", influencerSchema);
 
-module.exports = Influencer;
+export default Influencer;

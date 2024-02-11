@@ -1,6 +1,6 @@
-import { Post, Influencer } from "../../models";
-
-module.exports = {
+import models from "../../models/index.js";
+const { Post, Influencer } = models;
+export const resolvers = {
   Query: {
     posts: async () => {
       return await Post.find().populate("influencer");

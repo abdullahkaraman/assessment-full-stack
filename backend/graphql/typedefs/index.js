@@ -1,4 +1,4 @@
-const typeDefs = `#graphql
+export const typeDefs = `#graphql
   type Post {
     id: ID!
     influencer: Influencer!
