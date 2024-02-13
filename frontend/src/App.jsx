@@ -1,15 +1,26 @@
-import { useState } from "react";
 import "./App.css";
-import { Button } from "@/components/ui/button.jsx";
+import { Input } from "./components/ui/input";
+import { lazy, Suspense } from "react";
+import { ErrorBoundary } from "react-error-boundary";
+// import ErrorFallback from "./components/error-fallback";
+
+// const LazyComponent = lazy(() => (
+//   <div>
+//     <h1>Lazy loaded component</h1>
+//   </div>
+// ));
 
 function App() {
-  const [count, setCount] = useState(0);
-
   return (
-    <div className={"flex flex-col items-center"}>
-      <Button onClick={() => setCount((count) => count + 1)}>
-        count is {count}
-      </Button>
+    <div className="App">
+      <header className="App-header">
+        <Input className={"mt-4 text-md"} placeholder={"Search"} />
+      </header>
+      {/* <ErrorBoundary FallbackComponent={ErrorFallback}>
+      <Suspense fallback={<div>Loading...</div>}>
+        <LazyComponent />
+      </Suspense>
+    </ErrorBoundary> */}
     </div>
   );
 }
