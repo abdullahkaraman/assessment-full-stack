@@ -1,38 +1,58 @@
+import Influencer from "../../models/Influencer.js";
 import models from "../../models/index.js";
-const { Post, Influencer } = models;
+const { Post } = models;
 export const resolvers = {
   Query: {
-    posts: async () => {
-      return await Post.find().populate("influencer");
+    posts: async (_, { limit }) => {
+      const defaultLimit = 20;
+
+      const queryLimit = limit ? limit : defaultLimit;
+
+      return await Post.find().limit(queryLimit).populate("influencer");
     },
     post: async (_, { id }) => {
       return await Post.findById(id).populate("influencer");
     },
-    influencers: async () => {
-      return await Influencer.find();
+    paginatePosts: async (_, { page, limit }) => {
+      const defaultLimit = 20;
+      const defaultPage = 1;
+
+      const queryLimit = limit ? limit : defaultLimit;
+      const queryPage = page ? page : defaultPage;
+
+      return await Post.find()
+        .skip(queryLimit * (queryPage - 1))
+        .limit(queryLimit)
+        .populate("influencer");
     },
-    influencer: async (_, { username }) => {
-      return await Influencer.findOne({ username });
-    },
-  },
-  Mutation: {
-    createPost: async (_, { input }) => {
-      const post = new Post(input);
-      await post.save();
-      return post;
-    },
-    updatePost: async (_, { id, input }) => {
-      const post = await Post.findByIdAndUpdate(id, input, { new: true });
-      return post;
-    },
-    deletePost: async (_, { id }) => {
-      await Post.findByIdAndDelete(id);
-      return "Post deleted successfully";
-    },
-  },
-  Post: {
-    influencer: async (post) => {
-      return await Influencer.findById(post.influencer);
+    paginatedSearchPosts: async (_, { page, limit, query }) => {
+      const defaultLimit = 20;
+      const defaultPage = 1;
+
+      const queryLimit = limit ? limit : defaultLimit;
+      const queryPage = page ? page : defaultPage;
+
+      try {
+        const regex = new RegExp(query, "i");
+        const posts = await Post.find({ description: { $regex: regex } })
+          .skip(queryLimit * (queryPage - 1))
+          .limit(queryLimit)
+          .populate("influencer");
+        const usernames = await Influencer.find({
+          username: { $regex: regex },
+        });
+        const postsByUsernames = await Post.find({
+          influencer: { $in: usernames },
+        })
+          .skip(queryLimit * (queryPage - 1))
+          .limit(queryLimit)
+          .populate("influencer");
+        const allPosts = [...posts, ...postsByUsernames];
+        return allPosts;
+      } catch (error) {
+        console.error("Error:", error);
+        throw new Error("An error occurred while searching for posts.");
+      }
     },
   },
 };

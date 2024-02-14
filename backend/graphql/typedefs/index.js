@@ -19,30 +19,10 @@ export const typeDefs = `#graphql
     height: Int!
     blurhash: String!
   }
-  input ImageInput {
-    url: String!
-    width: Int!
-    height: Int!
-    blurhash: String!
-  }
-  input PostInput {
-    influencer: ID!
-    description: String!
-    image: ImageInput!
-  }
-  input PostUpdateInput {
-    description: String
-    image: ImageInput
-  }
   type Query {
-    posts: [Post]
+    posts(limit: Int): [Post]
     post(id: ID!): Post
-    influencers: [Influencer]
-    influencer(username: String!): Influencer
-  }
-  type Mutation {
-    createPost(input: PostInput!): Post!
-    updatePost(id: ID!, input: PostUpdateInput!): Post!
-    deletePost(id: ID!): String!
+    paginatePosts(page: Int, limit: Int): [Post]
+    paginatedSearchPosts(page: Int, limit: Int, query: String!): [Post]
   }
 `;
